@@ -24,7 +24,8 @@ export default function SideNav({
   onNewPlaylist,
   onNewTag,
 }) {
-  const isPlaylistSelected = (id) => active === "playlist_view" && selectedPlaylistId === id;
+  const isPlaylistSelected = (id) =>
+    active === "playlist_view" && selectedPlaylistId === id;
   const isTagSelected = (id) => active === "tag_view" && selectedTagId === id;
 
   return (
@@ -58,7 +59,11 @@ export default function SideNav({
 
       <Divider />
 
-      <SideNavActions onAddVideo={onAddVideo} onNewPlaylist={onNewPlaylist} onNewTag={onNewTag} />
+      <SideNavActions
+        onAddVideo={onAddVideo}
+        onNewPlaylist={onNewPlaylist}
+        onNewTag={onNewTag}
+      />
 
       <Divider />
 

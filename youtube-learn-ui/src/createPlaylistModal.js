@@ -23,7 +23,10 @@ const style = {
 
 function isProbablyYoutubePlaylistUrl(url) {
   if (!url) return false;
-  return url.includes("youtube.com") && (url.includes("list=") || url.includes("/playlist"));
+  return (
+    url.includes("youtube.com") &&
+    (url.includes("list=") || url.includes("/playlist"))
+  );
 }
 
 export default function CreatePlaylistModal({ open, onClose, onCreate }) {
@@ -119,7 +122,12 @@ export default function CreatePlaylistModal({ open, onClose, onCreate }) {
             helperText={scrapeError || " "}
           />
 
-          <Stack direction="row" spacing={1} justifyContent="flex-end" alignItems="center">
+          <Stack
+            direction="row"
+            spacing={1}
+            justifyContent="flex-end"
+            alignItems="center"
+          >
             <Button
               variant="outlined"
               onClick={handleScrape}

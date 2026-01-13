@@ -66,19 +66,19 @@ export default function AddVideoModal({ open, onClose, onAdd, playlist }) {
       setIsScraping(true);
 
       const res = await fetch("http://localhost:3001/api/scrapeVideo", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ url }),
-  });
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ url }),
+      });
 
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || "Failed to scrape video");
-  }
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || "Failed to scrape video");
+      }
 
-  const data = await res.json();
+      const data = await res.json();
 
       // Fill fields (only overwrite if we got values)
       if (data?.title) setTitle(clean(data.title));
@@ -101,7 +101,8 @@ export default function AddVideoModal({ open, onClose, onAdd, playlist }) {
     handleClose();
   };
 
-  const canSave = Boolean(playlist?.id) && clean(title) && clean(link) && clean(channel);
+  const canSave =
+    Boolean(playlist?.id) && clean(title) && clean(link) && clean(channel);
 
   return (
     <Modal open={open} onClose={handleClose}>
@@ -126,7 +127,12 @@ export default function AddVideoModal({ open, onClose, onAdd, playlist }) {
             helperText={scrapeError || " "}
           />
 
-          <Stack direction="row" spacing={1} justifyContent="flex-end" alignItems="center">
+          <Stack
+            direction="row"
+            spacing={1}
+            justifyContent="flex-end"
+            alignItems="center"
+          >
             <Button
               variant="outlined"
               onClick={handleScrape}
@@ -164,7 +170,12 @@ export default function AddVideoModal({ open, onClose, onAdd, playlist }) {
             placeholder="e.g. Veritasium"
           />
 
-          <Stack direction="row" spacing={1.5} justifyContent="flex-end" sx={{ mt: 1 }}>
+          <Stack
+            direction="row"
+            spacing={1.5}
+            justifyContent="flex-end"
+            sx={{ mt: 1 }}
+          >
             <Button onClick={handleClose} sx={{ textTransform: "none" }}>
               Cancel
             </Button>

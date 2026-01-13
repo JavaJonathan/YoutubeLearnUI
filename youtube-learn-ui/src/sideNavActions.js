@@ -6,7 +6,11 @@ import AddIcon from "@mui/icons-material/Add";
 import PlaylistPlayIcon from "@mui/icons-material/PlaylistPlay";
 import SellIcon from "@mui/icons-material/Sell";
 
-export default function SideNavActions({ onAddVideo, onNewPlaylist, onNewTag }) {
+export default function SideNavActions({
+  onAddVideo,
+  onNewPlaylist,
+  onNewTag,
+}) {
   return (
     <Box sx={{ p: 2 }}>
       <Stack spacing={1}>

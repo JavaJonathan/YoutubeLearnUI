@@ -35,7 +35,9 @@ export default function Home() {
   const [playlists, setPlaylists] = useState(DEMO_PLAYLISTS);
   const [tags, setTags] = useState(DEMO_TAGS);
 
-  const [selectedPlaylistId, setSelectedPlaylistId] = useState(DEMO_PLAYLISTS[0]?.id ?? null);
+  const [selectedPlaylistId, setSelectedPlaylistId] = useState(
+    DEMO_PLAYLISTS[0]?.id ?? null
+  );
   const [selectedTagId, setSelectedTagId] = useState(null);
 
   const [tagModalOpen, setTagModalOpen] = useState(false);
@@ -53,7 +55,9 @@ export default function Home() {
   );
 
   const pageTitle =
-    active === "tag_view" ? selectedTag?.name ?? "Tag" : selectedPlaylist?.name ?? "Playlist";
+    active === "tag_view"
+      ? selectedTag?.name ?? "Tag"
+      : selectedPlaylist?.name ?? "Playlist";
 
   const handleSelectPlaylist = (playlistId) => {
     setSelectedPlaylistId(playlistId);
@@ -99,12 +103,23 @@ export default function Home() {
         onNewTag={handleCreateTagOpen}
       />
 
-      <Box component="main" sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}>
+      <Box
+        component="main"
+        sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}
+      >
         <Toolbar />
-        <MainContent active={active} selectedPlaylist={selectedPlaylist} selectedTag={selectedTag} />
+        <MainContent
+          active={active}
+          selectedPlaylist={selectedPlaylist}
+          selectedTag={selectedTag}
+        />
       </Box>
 
-      <CreateTagModal open={tagModalOpen} onClose={handleCreateTagClose} onCreate={handleCreateTag} />
+      <CreateTagModal
+        open={tagModalOpen}
+        onClose={handleCreateTagClose}
+        onCreate={handleCreateTag}
+      />
       <CreatePlaylistModal
         open={playlistModalOpen}
         onClose={handleCreatePlaylistClose}

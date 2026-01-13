@@ -13,8 +13,8 @@ export async function scrapePlaylist(url) {
   }
 
   const data = await res.json();
-  console.log(data.videos)
-  return data.videos; 
+  console.log(data.videos);
+  return data.videos;
 }
 
 export async function scrapeVideo(url) {
