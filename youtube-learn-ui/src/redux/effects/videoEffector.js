@@ -1,4 +1,4 @@
-import * as videoService from '../services/videoService';
+import * as videoService from '../../services/videoService';
 import {
   GET_VIDEOS,
   GET_VIDEOS_SUCCESS,
@@ -8,8 +8,11 @@ import {
   UPDATE_VIDEO_CORE_INSIGHT_FAILURE,
   UPDATE_VIDEO_TAGS,
   UPDATE_VIDEO_TAGS_SUCCESS,
-  UPDATE_VIDEO_TAGS_FAILURE
-} from '../redux/actionTypes';
+  UPDATE_VIDEO_TAGS_FAILURE,
+  SCRAPE_VIDEO,
+  SCRAPE_VIDEO_SUCCESS,
+  SCRAPE_VIDEO_FAILURE
+} from '../actionTypes';
 
 export async function videoEffector(action, dispatch) {
   const payload = action?.payload;
@@ -47,6 +50,16 @@ export async function videoEffector(action, dispatch) {
         dispatch({ type: UPDATE_VIDEO_TAGS_SUCCESS, payload: data });
       } catch (error) {
         dispatch({ type: UPDATE_VIDEO_TAGS_FAILURE, payload: error });
+      }
+      break;
+    }
+
+    case SCRAPE_VIDEO: {
+      try {
+        const data = await videoService.scrapeVideo(payload);
+        dispatch({ type: SCRAPE_VIDEO_SUCCESS, payload: data });
+      } catch (error) {
+        dispatch({ type: SCRAPE_VIDEO_FAILURE, payload: error });
       }
       break;
     }

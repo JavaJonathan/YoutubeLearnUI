@@ -1,9 +1,9 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import { thunk } from 'redux-thunk';
-import rootReducer from './rootReducer';
-import { videoEffector } from '../effects/videoEffector';
-import { playlistEffector } from '../effects/playlistEffector';
-import { tagEffector } from '../effects/tagEffector';
+import rootReducer from './reducers/rootReducer';
+import { videoEffector } from './effects/videoEffector';
+import { playlistEffector } from './effects/playlistEffector';
+import { tagEffector } from './effects/tagEffector';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 

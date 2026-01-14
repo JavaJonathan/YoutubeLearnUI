@@ -1,4 +1,4 @@
-import * as playlistService from '../services/playlistService';
+import * as playlistService from '../../services/playlistService';
 import {
   GET_PLAYLISTS,
   GET_PLAYLISTS_SUCCESS,
@@ -12,7 +12,7 @@ import {
   REMOVE_VIDEO,
   REMOVE_VIDEO_SUCCESS,
   REMOVE_VIDEO_FAILURE
-} from '../redux/actionTypes';
+} from '../actionTypes';
 
 export async function playlistEffector(action, dispatch) {
   const payload = action?.payload;

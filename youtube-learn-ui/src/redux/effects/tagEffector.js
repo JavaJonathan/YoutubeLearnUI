@@ -1,5 +1,5 @@
-import * as tagService from '../services/tagService';
-import { CREATE_TAG, CREATE_TAG_SUCCESS, CREATE_TAG_FAILURE } from '../redux/actionTypes';
+import * as tagService from '../../services/tagService';
+import { CREATE_TAG, CREATE_TAG_SUCCESS, CREATE_TAG_FAILURE } from '../actionTypes';
 
 export async function tagEffector(action, dispatch) {
   const payload = action?.payload;
