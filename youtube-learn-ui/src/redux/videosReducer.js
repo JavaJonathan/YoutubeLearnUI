@@ -13,13 +13,13 @@ import {
   UPDATE_VIDEO_CORE_INSIGHT_FAILURE,
   UPDATE_VIDEO_TAGS,
   UPDATE_VIDEO_TAGS_SUCCESS,
-  UPDATE_VIDEO_TAGS_FAILURE,
-} from "./actionTypes";
+  UPDATE_VIDEO_TAGS_FAILURE
+} from './actionTypes';
 
 const initialState = {
   items: [],
   isLoading: false,
-  error: null,
+  error: null
 };
 
 export default function videosReducer(state = initialState, action) {
@@ -28,7 +28,7 @@ export default function videosReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: true,
-        error: null,
+        error: null
       };
     }
 
@@ -36,7 +36,7 @@ export default function videosReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
-        items: action.payload, // full list replace
+        items: action.payload
       };
     }
 
@@ -44,7 +44,7 @@ export default function videosReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
-        error: action.payload,
+        error: action.payload
       };
     }
 
@@ -52,7 +52,7 @@ export default function videosReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: true,
-        error: null,
+        error: null
       };
     }
 
@@ -60,7 +60,7 @@ export default function videosReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
-        items: [...state.items, action.payload],
+        items: [...state.items, action.payload]
       };
     }
 
@@ -68,7 +68,7 @@ export default function videosReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
-        error: action.payload,
+        error: action.payload
       };
     }
 
@@ -76,7 +76,7 @@ export default function videosReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: true,
-        error: null,
+        error: null
       };
     }
 
@@ -86,7 +86,7 @@ export default function videosReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
-        items: state.items.filter(videoEntity => videoEntity.id !== removedVideoId),
+        items: state.items.filter(videoEntity => videoEntity.id !== removedVideoId)
       };
     }
 
@@ -94,7 +94,7 @@ export default function videosReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
-        error: action.payload,
+        error: action.payload
       };
     }
 
@@ -102,7 +102,7 @@ export default function videosReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: true,
-        error: null,
+        error: null
       };
     }
 
@@ -118,7 +118,7 @@ export default function videosReducer(state = initialState, action) {
           videoEntity.id === updatedVideoId
             ? { ...videoEntity, coreInsight: updatedCoreInsight }
             : videoEntity
-        ),
+        )
       };
     }
 
@@ -126,15 +126,15 @@ export default function videosReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
-        error: action.payload,
+        error: action.payload
       };
     }
-    
+
     case UPDATE_VIDEO_TAGS: {
       return {
         ...state,
         isLoading: true,
-        error: null,
+        error: null
       };
     }
 
@@ -147,10 +147,8 @@ export default function videosReducer(state = initialState, action) {
         ...state,
         isLoading: false,
         items: state.items.map(videoEntity =>
-          videoEntity.id === updatedVideoId
-            ? { ...videoEntity, tags: updatedTags }
-            : videoEntity
-        ),
+          videoEntity.id === updatedVideoId ? { ...videoEntity, tags: updatedTags } : videoEntity
+        )
       };
     }
 
@@ -158,7 +156,7 @@ export default function videosReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
-        error: action.payload,
+        error: action.payload
       };
     }
 

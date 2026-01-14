@@ -1,15 +1,15 @@
 export async function scrapePlaylist(url) {
-  const res = await fetch("http://localhost:3001/api/scrapePlaylist", {
-    method: "POST",
+  const res = await fetch('http://localhost:3001/api/scrapePlaylist', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ url }),
+    body: JSON.stringify({ url })
   });
 
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(text || "Failed to scrape playlist");
+    throw new Error(text || 'Failed to scrape playlist');
   }
 
   const data = await res.json();
@@ -18,17 +18,17 @@ export async function scrapePlaylist(url) {
 }
 
 export async function scrapeVideo(url) {
-  const res = await fetch("http://localhost:3001/api/scrapeVideo", {
-    method: "POST",
+  const res = await fetch('http://localhost:3001/api/scrapeVideo', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ url }),
+    body: JSON.stringify({ url })
   });
 
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(text || "Failed to scrape video");
+    throw new Error(text || 'Failed to scrape video');
   }
 
   const data = await res.json();
@@ -36,6 +36,6 @@ export async function scrapeVideo(url) {
   return {
     title: data.title?.trim(),
     channel: data.channel?.trim(),
-    url: data.url,
+    url: data.url
   };
 }

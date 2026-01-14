@@ -1,6 +1,6 @@
-import * as React from "react";
-import Button from "@mui/material/Button";
-import LabelIcon from "@mui/icons-material/Label";
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import LabelIcon from '@mui/icons-material/Label';
 
 export default function CreateTagButton({ onClick }) {
   return (
@@ -8,7 +8,7 @@ export default function CreateTagButton({ onClick }) {
       variant="outlined"
       startIcon={<LabelIcon />}
       onClick={onClick}
-      sx={{ textTransform: "none" }}
+      sx={{ textTransform: 'none' }}
     >
       New Tag
     </Button>

@@ -10,13 +10,13 @@ import {
   UPDATE_TAG_FAILURE,
   DELETE_TAG,
   DELETE_TAG_SUCCESS,
-  DELETE_TAG_FAILURE,
-} from "./actionTypes";
+  DELETE_TAG_FAILURE
+} from './actionTypes';
 
 const initialState = {
   items: [],
   isLoading: false,
-  error: null,
+  error: null
 };
 
 export default function tagsReducer(state = initialState, action) {
@@ -25,7 +25,7 @@ export default function tagsReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: true,
-        error: null,
+        error: null
       };
     }
 
@@ -33,7 +33,7 @@ export default function tagsReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
-        items: action.payload,
+        items: action.payload
       };
     }
 
@@ -41,7 +41,7 @@ export default function tagsReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
-        error: action.payload,
+        error: action.payload
       };
     }
 
@@ -49,7 +49,7 @@ export default function tagsReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: true,
-        error: null,
+        error: null
       };
     }
 
@@ -63,7 +63,7 @@ export default function tagsReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
-        items: updatedItems,
+        items: updatedItems
       };
     }
 
@@ -71,7 +71,7 @@ export default function tagsReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
-        error: action.payload,
+        error: action.payload
       };
     }
 
@@ -79,7 +79,7 @@ export default function tagsReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: true,
-        error: null,
+        error: null
       };
     }
 
@@ -91,7 +91,7 @@ export default function tagsReducer(state = initialState, action) {
         isLoading: false,
         items: state.items.map(tagEntity =>
           tagEntity.id === updatedTag.id ? { ...tagEntity, ...updatedTag } : tagEntity
-        ),
+        )
       };
     }
 
@@ -99,7 +99,7 @@ export default function tagsReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
-        error: action.payload,
+        error: action.payload
       };
     }
 
@@ -107,7 +107,7 @@ export default function tagsReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: true,
-        error: null,
+        error: null
       };
     }
 
@@ -117,7 +117,7 @@ export default function tagsReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
-        items: state.items.filter(tagEntity => tagEntity.id !== deletedTagId),
+        items: state.items.filter(tagEntity => tagEntity.id !== deletedTagId)
       };
     }
 
@@ -125,7 +125,7 @@ export default function tagsReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
-        error: action.payload,
+        error: action.payload
       };
     }
 

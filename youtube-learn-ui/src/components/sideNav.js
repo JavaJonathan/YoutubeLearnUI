@@ -1,15 +1,15 @@
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import YouTubeIcon from "@mui/icons-material/YouTube";
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import YouTubeIcon from '@mui/icons-material/YouTube';
 
-import SideNavActions from "./sideNavActions";
-import SideNavSectionList from "./sideNavSectionList";
+import SideNavActions from './sideNavActions';
+import SideNavSectionList from './sideNavSectionList';
 
-import PlaylistPlayIcon from "@mui/icons-material/PlaylistPlay";
-import SellIcon from "@mui/icons-material/Sell";
+import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay';
+import SellIcon from '@mui/icons-material/Sell';
 
 export default function SideNav({
   drawerWidth,
@@ -22,11 +22,10 @@ export default function SideNav({
   onSelectTag,
   onAddVideo,
   onNewPlaylist,
-  onNewTag,
+  onNewTag
 }) {
-  const isPlaylistSelected = (id) =>
-    active === "playlist_view" && selectedPlaylistId === id;
-  const isTagSelected = (id) => active === "tag_view" && selectedTagId === id;
+  const isPlaylistSelected = id => active === 'playlist_view' && selectedPlaylistId === id;
+  const isTagSelected = id => active === 'tag_view' && selectedTagId === id;
 
   return (
     <Drawer
@@ -35,17 +34,17 @@ export default function SideNav({
       sx={{
         width: drawerWidth,
         flexShrink: 0,
-        "& .MuiDrawer-paper": {
+        '& .MuiDrawer-paper': {
           width: drawerWidth,
-          boxSizing: "border-box",
-          borderRight: (theme) => `1px solid ${theme.palette.divider}`,
-          display: "flex",
-          flexDirection: "column",
-          height: "100vh",
-        },
+          boxSizing: 'border-box',
+          borderRight: theme => `1px solid ${theme.palette.divider}`,
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100vh'
+        }
       }}
     >
-      <Toolbar sx={{ display: "flex", alignItems: "center", gap: 1.25 }}>
+      <Toolbar sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
         <YouTubeIcon />
         <Box>
           <Typography variant="subtitle1" fontWeight={700} noWrap>
@@ -59,11 +58,7 @@ export default function SideNav({
 
       <Divider />
 
-      <SideNavActions
-        onAddVideo={onAddVideo}
-        onNewPlaylist={onNewPlaylist}
-        onNewTag={onNewTag}
-      />
+      <SideNavActions onAddVideo={onAddVideo} onNewPlaylist={onNewPlaylist} onNewTag={onNewTag} />
 
       <Divider />
 
@@ -71,20 +66,20 @@ export default function SideNav({
         sx={{
           px: 1,
           py: 1,
-          display: "flex",
-          flexDirection: "column",
+          display: 'flex',
+          flexDirection: 'column',
           gap: 1,
           flex: 1,
-          minHeight: 0,
+          minHeight: 0
         }}
       >
         <SideNavSectionList
           title="Your Playlists"
           items={playlists}
           icon={PlaylistPlayIcon}
-          getLabel={(p) => p.name}
-          isSelected={(p) => isPlaylistSelected(p.id)}
-          onSelect={(p) => onSelectPlaylist(p.id)}
+          getLabel={p => p.name}
+          isSelected={p => isPlaylistSelected(p.id)}
+          onSelect={p => onSelectPlaylist(p.id)}
         />
 
         <Divider />
@@ -93,9 +88,9 @@ export default function SideNav({
           title="Your Tags"
           items={tags}
           icon={SellIcon}
-          getLabel={(t) => t.name}
-          isSelected={(t) => isTagSelected(t.id)}
-          onSelect={(t) => onSelectTag(t.id)}
+          getLabel={t => t.name}
+          isSelected={t => isTagSelected(t.id)}
+          onSelect={t => onSelectTag(t.id)}
         />
       </Box>
     </Drawer>

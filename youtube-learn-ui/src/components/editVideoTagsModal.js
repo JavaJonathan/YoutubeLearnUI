@@ -1,35 +1,35 @@
-import { useEffect, useMemo, useState } from "react";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
-import Chip from "@mui/material/Chip";
+import { useEffect, useMemo, useState } from 'react';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import Chip from '@mui/material/Chip';
 
 const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
   width: 520,
-  bgcolor: "background.paper",
+  bgcolor: 'background.paper',
   borderRadius: 2,
   boxShadow: 24,
   p: 3,
-  outline: "none",
+  outline: 'none'
 };
 
 function toTagName(t) {
-  return typeof t === "string" ? t : t?.name;
+  return typeof t === 'string' ? t : t?.name;
 }
 
 function dedupeCaseInsensitive(arr) {
   const seen = new Set();
   const out = [];
   for (const s of arr) {
-    const v = (s ?? "").trim();
+    const v = (s ?? '').trim();
     if (!v) continue;
     const key = v.toLowerCase();
     if (seen.has(key)) continue;
@@ -43,8 +43,8 @@ export default function EditVideoTagsModal({
   open,
   onClose,
   video,
-  allTags = ["Time Horizons", "Incentives", "Tradeoffs", "Constraints"],
-  onSave,
+  allTags = ['Time Horizons', 'Incentives', 'Tradeoffs', 'Constraints'],
+  onSave
 }) {
   const tagOptions = useMemo(() => {
     const names = (allTags ?? []).map(toTagName).filter(Boolean);
@@ -55,8 +55,8 @@ export default function EditVideoTagsModal({
     const existing = (video?.tags ?? []).map(toTagName).filter(Boolean);
     const existingDedup = dedupeCaseInsensitive(existing);
 
-    const optionSet = new Set(tagOptions.map((t) => t.toLowerCase()));
-    return existingDedup.filter((t) => optionSet.has(t.toLowerCase()));
+    const optionSet = new Set(tagOptions.map(t => t.toLowerCase()));
+    return existingDedup.filter(t => optionSet.has(t.toLowerCase()));
   }, [video, tagOptions]);
 
   const [selected, setSelected] = useState([]);
@@ -83,7 +83,7 @@ export default function EditVideoTagsModal({
     }
   };
 
-  const title = video?.title ? `Tags — ${video.title}` : "Tags";
+  const title = video?.title ? `Tags — ${video.title}` : 'Tags';
 
   return (
     <Modal open={open} onClose={saving ? undefined : onClose}>
@@ -113,11 +113,11 @@ export default function EditVideoTagsModal({
                 />
               ))
             }
-            renderInput={(params) => (
+            renderInput={params => (
               <TextField
                 {...params}
                 label="Tags"
-                placeholder={tagOptions.length ? "Search tags…" : "No tags yet"}
+                placeholder={tagOptions.length ? 'Search tags…' : 'No tags yet'}
                 autoFocus
                 fullWidth
               />
@@ -126,7 +126,7 @@ export default function EditVideoTagsModal({
           />
 
           <Stack direction="row" spacing={1} justifyContent="flex-end">
-            <Button onClick={onClose} disabled={saving} sx={{ textTransform: "none" }}>
+            <Button onClick={onClose} disabled={saving} sx={{ textTransform: 'none' }}>
               Cancel
             </Button>
             <Button
@@ -138,9 +138,9 @@ export default function EditVideoTagsModal({
                 tagOptions.length === 0 ||
                 dedupeCaseInsensitive(selected).length === 0
               }
-              sx={{ textTransform: "none" }}
+              sx={{ textTransform: 'none' }}
             >
-              {saving ? "Saving…" : "Save"}
+              {saving ? 'Saving…' : 'Save'}
             </Button>
           </Stack>
         </Stack>

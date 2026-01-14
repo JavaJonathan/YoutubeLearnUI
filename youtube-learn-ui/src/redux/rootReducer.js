@@ -1,8 +1,8 @@
-import { combineReducers } from "redux";
-import videosReducer from "./videosReducer";
+import { combineReducers } from 'redux';
+import videosReducer from './videosReducer';
 
 const rootReducer = combineReducers({
-  videos: videosReducer,
+  videos: videosReducer
 });
 
 export default rootReducer;

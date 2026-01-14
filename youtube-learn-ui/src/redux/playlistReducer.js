@@ -2,24 +2,21 @@ import {
   GET_PLAYLISTS,
   GET_PLAYLISTS_SUCCESS,
   GET_PLAYLISTS_FAILURE,
-
   CREATE_PLAYLIST,
   CREATE_PLAYLIST_SUCCESS,
   CREATE_PLAYLIST_FAILURE,
-
   UPDATE_PLAYLIST,
   UPDATE_PLAYLIST_SUCCESS,
   UPDATE_PLAYLIST_FAILURE,
-
   DELETE_PLAYLIST,
   DELETE_PLAYLIST_SUCCESS,
-  DELETE_PLAYLIST_FAILURE,
-} from "./actionTypes";
+  DELETE_PLAYLIST_FAILURE
+} from './actionTypes';
 
 const initialState = {
   items: [],
   isLoading: false,
-  error: null,
+  error: null
 };
 
 export default function playlistsReducer(state = initialState, action) {
@@ -28,7 +25,7 @@ export default function playlistsReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: true,
-        error: null,
+        error: null
       };
     }
 
@@ -36,7 +33,7 @@ export default function playlistsReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
-        items: action.payload,
+        items: action.payload
       };
     }
 
@@ -44,7 +41,7 @@ export default function playlistsReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
-        error: action.payload,
+        error: action.payload
       };
     }
 
@@ -52,7 +49,7 @@ export default function playlistsReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: true,
-        error: null,
+        error: null
       };
     }
 
@@ -66,7 +63,7 @@ export default function playlistsReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
-        items: updatedItems,
+        items: updatedItems
       };
     }
 
@@ -74,7 +71,7 @@ export default function playlistsReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
-        error: action.payload,
+        error: action.payload
       };
     }
 
@@ -82,7 +79,7 @@ export default function playlistsReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: true,
-        error: null,
+        error: null
       };
     }
 
@@ -96,7 +93,7 @@ export default function playlistsReducer(state = initialState, action) {
           playlistEntity.id === updatedPlaylist.id
             ? { ...playlistEntity, ...updatedPlaylist }
             : playlistEntity
-        ),
+        )
       };
     }
 
@@ -104,7 +101,7 @@ export default function playlistsReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
-        error: action.payload,
+        error: action.payload
       };
     }
 
@@ -112,7 +109,7 @@ export default function playlistsReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: true,
-        error: null,
+        error: null
       };
     }
 
@@ -122,7 +119,7 @@ export default function playlistsReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
-        items: state.items.filter(playlistEntity => playlistEntity.id !== deletedPlaylistId),
+        items: state.items.filter(playlistEntity => playlistEntity.id !== deletedPlaylistId)
       };
     }
 
@@ -130,7 +127,7 @@ export default function playlistsReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
-        error: action.payload,
+        error: action.payload
       };
     }
 

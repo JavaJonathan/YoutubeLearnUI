@@ -1,49 +1,49 @@
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import Home from "./components/Home";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import Home from './components/Home';
 
 const darkTheme = createTheme({
   palette: {
-    mode: "dark",
+    mode: 'dark',
     background: {
-      default: "#0f1115",
-      paper: "#151821",
+      default: '#0f1115',
+      paper: '#151821'
     },
     primary: {
-      main: "#7aa2f7",
+      main: '#7aa2f7'
     },
-    divider: "rgba(255,255,255,0.08)",
+    divider: 'rgba(255,255,255,0.08)'
   },
   typography: {
     fontFamily: `"Inter", "Roboto", "Helvetica", "Arial", sans-serif`,
     h6: {
       fontWeight: 600,
-      letterSpacing: "-0.01em",
+      letterSpacing: '-0.01em'
     },
     subtitle1: {
-      fontWeight: 600,
+      fontWeight: 600
     },
     overline: {
-      letterSpacing: "0.12em",
-    },
+      letterSpacing: '0.12em'
+    }
   },
   components: {
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundImage: "none",
-          backdropFilter: "blur(6px)",
-        },
-      },
+          backgroundImage: 'none',
+          backdropFilter: 'blur(6px)'
+        }
+      }
     },
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundImage: "none",
-        },
-      },
-    },
-  },
+          backgroundImage: 'none'
+        }
+      }
+    }
+  }
 });
 
 export default function App() {
