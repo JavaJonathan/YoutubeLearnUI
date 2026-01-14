@@ -5,11 +5,11 @@ import Toolbar from "@mui/material/Toolbar";
 
 import TopBar from "./topBar";
 import SideNav from "./sideNav";
-import MainContent from "./components/mainContent";
+import MainContent from "./mainContent";
 
-import CreateTagModal from "./components/createTagModal";
+import CreateTagModal from "./createTagModal";
 import CreatePlaylistModal from "./createPlaylistModal";
-import AddVideoModal from "./components/addVideoModal";
+import AddVideoModal from "./addVideoModal";
 
 const drawerWidth = 280;
 
