@@ -11,13 +11,17 @@ import {
   DELETE_PLAYLIST,
   DELETE_PLAYLIST_SUCCESS,
   DELETE_PLAYLIST_FAILURE,
+
+  CREATE_PLAYLIST_WITH_VIDEOS,
+  CREATE_PLAYLIST_WITH_VIDEOS_SUCCESS,
+  CREATE_PLAYLIST_WITH_VIDEOS_FAILURE,
 } from "../actionTypes";
 
 const initialState = {
   items: [],
   isLoading: false,
   error: null,
-  selectedPlaylistId: null
+  selectedPlaylistId: null,
 };
 
 function getPlaylistId(playlistEntity) {
@@ -119,6 +123,39 @@ export default function playlistsReducer(state = initialState, action) {
     }
 
     case CREATE_PLAYLIST_FAILURE: {
+      return {
+        ...state,
+        isLoading: false,
+        error: action.payload,
+      };
+    }
+
+    case CREATE_PLAYLIST_WITH_VIDEOS: {
+      return {
+        ...state,
+        isLoading: true,
+        error: null,
+      };
+    }
+
+    case CREATE_PLAYLIST_WITH_VIDEOS_SUCCESS: {
+      const createdPlaylist = action.payload?.playlist;
+
+      const updatedItems = createdPlaylist
+        ? upsertPlaylistById(state.items, createdPlaylist)
+        : state.items;
+
+      const createdPlaylistId = getPlaylistId(createdPlaylist);
+
+      return {
+        ...state,
+        isLoading: false,
+        items: updatedItems,
+        selectedPlaylistId: createdPlaylistId ?? state.selectedPlaylistId,
+      };
+    }
+
+    case CREATE_PLAYLIST_WITH_VIDEOS_FAILURE: {
       return {
         ...state,
         isLoading: false,

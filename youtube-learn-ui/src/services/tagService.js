@@ -1,6 +1,11 @@
 import axios from 'axios';
 
-const BASE_URL = '/api/tags';
+const BASE_URL = 'https://localhost:7033/api/tags';
+
+export async function getTags() {
+  const response = await axios.get(BASE_URL);
+  return response.data;
+}
 
 export async function createTag(tagName) {
   const trimmedTagName = tagName?.trim();

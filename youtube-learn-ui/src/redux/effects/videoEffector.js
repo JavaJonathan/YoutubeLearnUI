@@ -3,15 +3,22 @@ import {
   GET_VIDEOS,
   GET_VIDEOS_SUCCESS,
   GET_VIDEOS_FAILURE,
+
   UPDATE_VIDEO_CORE_INSIGHT,
   UPDATE_VIDEO_CORE_INSIGHT_SUCCESS,
   UPDATE_VIDEO_CORE_INSIGHT_FAILURE,
+
   UPDATE_VIDEO_TAGS,
   UPDATE_VIDEO_TAGS_SUCCESS,
   UPDATE_VIDEO_TAGS_FAILURE,
+
   SCRAPE_VIDEO,
   SCRAPE_VIDEO_SUCCESS,
-  SCRAPE_VIDEO_FAILURE
+  SCRAPE_VIDEO_FAILURE,
+
+  CREATE_PLAYLIST_WITH_VIDEOS,
+  CREATE_PLAYLIST_WITH_VIDEOS_SUCCESS,
+  CREATE_PLAYLIST_WITH_VIDEOS_FAILURE
 } from '../actionTypes';
 
 export async function videoEffector(action, dispatch) {
@@ -60,6 +67,26 @@ export async function videoEffector(action, dispatch) {
         dispatch({ type: SCRAPE_VIDEO_SUCCESS, payload: data });
       } catch (error) {
         dispatch({ type: SCRAPE_VIDEO_FAILURE, payload: error });
+      }
+      break;
+    }
+    
+    case CREATE_PLAYLIST_WITH_VIDEOS: {
+      try {
+        const title = payload?.title;
+        const videos = payload?.videos;
+
+        const data = await videoService.createPlaylistWithVideos(title, videos);
+
+        dispatch({
+          type: CREATE_PLAYLIST_WITH_VIDEOS_SUCCESS,
+          payload: data
+        });
+      } catch (error) {
+        dispatch({
+          type: CREATE_PLAYLIST_WITH_VIDEOS_FAILURE,
+          payload: error
+        });
       }
       break;
     }

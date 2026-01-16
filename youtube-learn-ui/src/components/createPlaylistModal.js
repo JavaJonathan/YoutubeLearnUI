@@ -1,53 +1,95 @@
-import { useEffect, useState } from 'react';
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Stack from '@mui/material/Stack';
-import Divider from '@mui/material/Divider';
-import CircularProgress from '@mui/material/CircularProgress';
-import { scrapePlaylist } from './httpHelper';
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import Divider from "@mui/material/Divider";
+import CircularProgress from "@mui/material/CircularProgress";
+
+import * as videoService from "../services/videoService";
+import {
+  CREATE_PLAYLIST,
+  CREATE_PLAYLIST_WITH_VIDEOS
+} from "../redux/actionTypes";
+import { selectPlaylistsLoading, selectPlaylistsError } from "../redux/selectors";
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 420,
-  bgcolor: 'background.paper',
+  bgcolor: "background.paper",
   borderRadius: 2,
   boxShadow: 24,
-  p: 3
+  p: 3,
 };
+
+function clean(text) {
+  return (text ?? "").replace(/\s+/g, " ").trim();
+}
 
 function isProbablyYoutubePlaylistUrl(url) {
   if (!url) return false;
-  return url.includes('youtube.com') && (url.includes('list=') || url.includes('/playlist'));
+  const lowerCasedUrl = url.toLowerCase();
+  return (
+    lowerCasedUrl.includes("youtube.com") &&
+    (lowerCasedUrl.includes("list=") || lowerCasedUrl.includes("/playlist"))
+  );
 }
 
-export default function CreatePlaylistModal({ open, onClose, onCreate }) {
-  const [name, setName] = useState('');
-  const [url, setUrl] = useState('');
+export default function CreatePlaylistModal({ open, onClose }) {
+  const dispatch = useDispatch();
+
+  const isSaving = useSelector(selectPlaylistsLoading);
+  const saveError = useSelector(selectPlaylistsError);
+
+  const [name, setName] = useState("");
+  const [url, setUrl] = useState("");
+
   const [isScraping, setIsScraping] = useState(false);
-  const [scrapeError, setScrapeError] = useState('');
+  const [scrapeError, setScrapeError] = useState("");
 
   useEffect(() => {
     if (!open) return;
-    setName('');
-    setUrl('');
+
+    setName("");
+    setUrl("");
     setIsScraping(false);
-    setScrapeError('');
+    setScrapeError("");
   }, [open]);
 
   const handleClose = () => {
-    onClose();
+    onClose?.();
   };
 
-  const handleScrape = async () => {
-    setScrapeError('');
+  const handleCreate = async () => {
+    setScrapeError("");
 
-    if (!isProbablyYoutubePlaylistUrl(url)) {
+    const cleanedName = clean(name);
+    const cleanedUrl = clean(url);
+
+    if (!cleanedName) return;
+
+    const shouldScrape = Boolean(cleanedUrl);
+
+    if (!shouldScrape) {
+      dispatch({
+        type: CREATE_PLAYLIST,
+        payload: {
+          title: cleanedName,
+        },
+      });
+
+      handleClose();
+      return;
+    }
+
+    if (!isProbablyYoutubePlaylistUrl(cleanedUrl)) {
       setScrapeError("That doesn't look like a YouTube playlist URL.");
       return;
     }
@@ -55,36 +97,37 @@ export default function CreatePlaylistModal({ open, onClose, onCreate }) {
     try {
       setIsScraping(true);
 
-      await scrapePlaylist(url);
-    } catch (e) {
-      setScrapeError(e?.message || 'Failed to scrape playlist.');
-    } finally {
+      const scrapedVideos = await videoService.scrapePlaylist({ url: cleanedUrl });
+
       setIsScraping(false);
+
+      dispatch({
+        type: CREATE_PLAYLIST_WITH_VIDEOS,
+        payload: {
+          title: cleanedName,
+          videos: scrapedVideos,
+        },
+      });
+
+      handleClose();
+    } catch (error) {
+      setIsScraping(false);
+      setScrapeError(String(error?.message ?? error));
     }
   };
 
-  const handleCreate = () => {
-    // "either or" logic:
-    // - If URL is present, treat as scrape mode
-    // - Otherwise manual
-    const mode = url ? 'scrape' : 'manual';
+  const helperText = clean(url)
+    ? "Paste a YouTube playlist link and click Save to scrape + import the videos."
+    : "Enter a name. Optionally paste a YouTube playlist link to scrape + import.";
 
-    // minimal guard so you don't create blank playlists by accident
-    if (!name.trim()) return;
+  const cleanedUrl = clean(url);
+  const urlLooksValid = !cleanedUrl || isProbablyYoutubePlaylistUrl(cleanedUrl);
 
-    onCreate({
-      mode,
-      name: name.trim(),
-      url: url.trim() || null
-      // items: optionally pass back scraped items if you store them in state
-    });
+  const urlErrorText =
+    scrapeError || (!urlLooksValid ? "That doesn't look like a YouTube playlist URL." : "");
 
-    handleClose();
-  };
-
-  const helperText = url
-    ? 'Paste a YouTube playlist link and click Scrape (or just Save if name is filled).'
-    : 'Either enter a name, or paste a YouTube playlist link to scrape it.';
+  const disableSave =
+    !clean(name) || isSaving || isScraping || (Boolean(cleanedUrl) && !urlLooksValid);
 
   return (
     <Modal open={open} onClose={handleClose}>
@@ -102,7 +145,7 @@ export default function CreatePlaylistModal({ open, onClose, onCreate }) {
             label="Playlist name"
             fullWidth
             value={name}
-            onChange={e => setName(e.target.value)}
+            onChange={(event) => setName(event.target.value)}
             size="small"
           />
 
@@ -112,44 +155,42 @@ export default function CreatePlaylistModal({ open, onClose, onCreate }) {
             label="YouTube playlist URL (optional)"
             fullWidth
             value={url}
-            onChange={e => setUrl(e.target.value)}
+            onChange={(event) => setUrl(event.target.value)}
             size="small"
             placeholder="https://www.youtube.com/playlist?list=..."
-            error={Boolean(scrapeError)}
-            helperText={scrapeError || ' '}
+            error={Boolean(urlErrorText)}
+            helperText={urlErrorText || " "}
           />
 
           <Stack direction="row" spacing={1} justifyContent="flex-end" alignItems="center">
-            <Button
-              variant="outlined"
-              onClick={handleScrape}
-              disabled={!url || isScraping}
-              sx={{ textTransform: 'none' }}
-            >
-              {isScraping ? (
-                <Stack direction="row" spacing={1} alignItems="center">
-                  <CircularProgress size={16} />
-                  <span>Scraping…</span>
-                </Stack>
-              ) : (
-                'Scrape'
-              )}
-            </Button>
-
             <Box sx={{ flexGrow: 1 }} />
 
-            <Button onClick={handleClose} sx={{ textTransform: 'none' }}>
+            <Button onClick={handleClose} sx={{ textTransform: "none" }}>
               Cancel
             </Button>
+
             <Button
               variant="contained"
               onClick={handleCreate}
-              disabled={!name.trim()}
-              sx={{ textTransform: 'none' }}
+              disabled={disableSave}
+              sx={{ textTransform: "none" }}
             >
-              Save
+              {isSaving || isScraping ? (
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <CircularProgress size={16} />
+                  <span>Saving…</span>
+                </Stack>
+              ) : (
+                "Save"
+              )}
             </Button>
           </Stack>
+
+          {saveError ? (
+            <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+              {String(saveError)}
+            </Typography>
+          ) : null}
         </Stack>
       </Box>
     </Modal>

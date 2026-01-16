@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = '/api/playlists';
+const BASE_URL = 'https://localhost:7033/api/playlists';
 
 export async function getPlaylists() {
   const response = await axios.get(BASE_URL);

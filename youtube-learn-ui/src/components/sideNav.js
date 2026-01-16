@@ -27,6 +27,8 @@ export default function SideNav({
   const isPlaylistSelected = id => active === 'playlist_view' && selectedPlaylistId === id;
   const isTagSelected = id => active === 'tag_view' && selectedTagId === id;
 
+  console.log(playlists);
+
   return (
     <Drawer
       variant="permanent"
@@ -77,7 +79,7 @@ export default function SideNav({
           title="Your Playlists"
           items={playlists}
           icon={PlaylistPlayIcon}
-          getLabel={p => p.name}
+          getLabel={p => p.title}
           isSelected={p => isPlaylistSelected(p.id)}
           onSelect={p => onSelectPlaylist(p.id)}
         />
@@ -88,7 +90,7 @@ export default function SideNav({
           title="Your Tags"
           items={tags}
           icon={SellIcon}
-          getLabel={t => t.name}
+          getLabel={t => t.title}
           isSelected={t => isTagSelected(t.id)}
           onSelect={t => onSelectTag(t.id)}
         />
