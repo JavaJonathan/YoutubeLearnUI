@@ -73,10 +73,11 @@ export default function Home() {
 
   const pageTitle =
     active === "tag_view"
-      ? selectedTag?.title ?? "Tag"
-      : selectedPlaylist?.title ?? "Playlist";
+      ? selectedTag?.title
+      : selectedPlaylist?.title;
 
   const handleSelectPlaylist = (playlistId) => {
+    setSelectedPlaylistId(playlistId);
     dispatch({
       type: GET_VIDEOS,
       payload: {
@@ -91,6 +92,7 @@ export default function Home() {
   };
 
   const handleSelectTag = (tagId) => {
+    setSelectedTagId(tagId);
     dispatch({
       type: GET_VIDEOS,
       payload: {
