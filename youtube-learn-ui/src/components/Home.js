@@ -68,17 +68,8 @@ export default function Home() {
   useEffect(() => {
     if (!selectedPlaylistId) return;
 
-    dispatch({
-      type: GET_VIDEOS,
-      payload: {
-        playlistId: selectedPlaylistId,
-        tags: [],
-        matchAllTags: false,
-        page: 1,
-        pageSize: 200,
-      },
-    });
-  }, [dispatch, selectedPlaylistId]);
+    
+  }, [dispatch, selectedPlaylistId, selectedTagId]);
 
   const pageTitle =
     active === "tag_view"
@@ -86,13 +77,30 @@ export default function Home() {
       : selectedPlaylist?.title ?? "Playlist";
 
   const handleSelectPlaylist = (playlistId) => {
-    setSelectedPlaylistId(playlistId);
-    setSelectedTagId(null);
+    dispatch({
+      type: GET_VIDEOS,
+      payload: {
+        playlistId: playlistId,
+        tags: [],
+        matchAllTags: false,
+        page: 1,
+        pageSize: 200,
+      },
+    });
     setActive("playlist_view");
   };
 
   const handleSelectTag = (tagId) => {
-    setSelectedTagId(tagId);
+    dispatch({
+      type: GET_VIDEOS,
+      payload: {
+        playlistId: null,
+        tags: [tagId],
+        matchAllTags: false,
+        page: 1,
+        pageSize: 200,
+      },
+    });
     setActive("tag_view");
   };
 

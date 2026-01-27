@@ -50,8 +50,3 @@ export const selectScrapeVideoError = createSelector(
 function getVideoId(videoEntity) {
   return videoEntity?.id ?? videoEntity?.Id;
 }
-
-export const makeSelectVideoById = (videoId) =>
-  createSelector([selectVideoItems], (videoEntities) =>
-    videoEntities.find((videoEntity) => getVideoId(videoEntity) === videoId) ?? null
-  );

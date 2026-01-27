@@ -31,18 +31,13 @@ const initialState = {
   scrapedVideo: null
 };
 
-function getVideoId(videoEntity) {
-  // supports either id or Id depending on serializer
-  return videoEntity?.id ?? videoEntity?.Id;
-}
-
 function upsertVideoById(videoEntities, updatedVideoEntity) {
-  const updatedVideoId = getVideoId(updatedVideoEntity);
+  const updatedVideoId = updatedVideoEntity.id;
 
   if (!updatedVideoId) return videoEntities;
 
   const existingIndex = videoEntities.findIndex(
-    (videoEntity) => getVideoId(videoEntity) === updatedVideoId
+    (videoEntity) => videoEntity.id === updatedVideoId
   );
 
   if (existingIndex === -1) {
@@ -50,7 +45,7 @@ function upsertVideoById(videoEntities, updatedVideoEntity) {
   }
 
   return videoEntities.map((videoEntity) =>
-    getVideoId(videoEntity) === updatedVideoId ? { ...videoEntity, ...updatedVideoEntity } : videoEntity
+    videoEntity.id === updatedVideoId ? { ...videoEntity, ...updatedVideoEntity } : videoEntity
   );
 }
 
@@ -126,7 +121,7 @@ export default function videosReducer(state = initialState, action) {
         ...state,
         isLoading: false,
         items: state.items.filter(
-          (videoEntity) => getVideoId(videoEntity) !== removedVideoId
+          (videoEntity) => videoEntity.id !== removedVideoId
         ),
         total: Math.max(0, state.total - 1),
       };
@@ -157,7 +152,7 @@ export default function videosReducer(state = initialState, action) {
         ...state,
         isLoading: false,
         items: state.items.map((videoEntity) =>
-          getVideoId(videoEntity) === updatedVideoId
+          videoEntity.id === updatedVideoId
             ? {
                 ...videoEntity,
                 coreInsights: updatedCoreInsights,
@@ -192,7 +187,7 @@ export default function videosReducer(state = initialState, action) {
         ...state,
         isLoading: false,
         items: state.items.map((videoEntity) =>
-          getVideoId(videoEntity) === updatedVideoId
+          videoEntity.id === updatedVideoId
             ? { ...videoEntity, tags: updatedTags, Tags: updatedTags }
             : videoEntity
         ),

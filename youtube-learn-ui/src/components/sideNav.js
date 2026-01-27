@@ -27,8 +27,6 @@ export default function SideNav({
   const isPlaylistSelected = id => active === 'playlist_view' && selectedPlaylistId === id;
   const isTagSelected = id => active === 'tag_view' && selectedTagId === id;
 
-  console.log(playlists);
-
   return (
     <Drawer
       variant="permanent"
