@@ -1,70 +1,104 @@
-import { useMemo, useState } from 'react';
-import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
-import Toolbar from '@mui/material/Toolbar';
+import { useMemo, useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import Box from "@mui/material/Box";
+import CssBaseline from "@mui/material/CssBaseline";
+import Toolbar from "@mui/material/Toolbar";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
-import TopBar from './topBar';
-import SideNav from './sideNav';
-import MainContent from './mainContent';
+import TopBar from "./topBar";
+import SideNav from "./sideNav";
+import MainContent from "./mainContent";
+import CreateTagModal from "./createTagModal";
+import CreatePlaylistModal from "./createPlaylistModal";
+import AddVideoModal from "./addVideoModal";
 
-import CreateTagModal from './createTagModal';
-import CreatePlaylistModal from './createPlaylistModal';
-import AddVideoModal from './addVideoModal';
+import { GET_PLAYLISTS, CREATE_PLAYLIST } from "../redux/actionTypes";
+import { GET_TAGS, CREATE_TAG } from "../redux/actionTypes";
+import { GET_VIDEOS, ADD_VIDEO } from "../redux/actionTypes";
+
+import {
+  selectPlaylistItems,
+  selectTagItems,
+  selectPlaylistsLoading,
+  selectTagsLoading,
+  selectVideosLoading,
+} from "../redux/selectors";
 
 const drawerWidth = 280;
 
-const DEMO_PLAYLISTS = [
-  { id: 'pl-1', name: 'Economics' },
-  { id: 'pl-2', name: 'Software Engineering' },
-  { id: 'pl-3', name: 'Chess' }
-];
-
-const DEMO_TAGS = [
-  { id: 'tag-1', name: 'Incentives' },
-  { id: 'tag-2', name: 'Tradeoffs' },
-  { id: 'tag-3', name: 'Second-order effects' },
-  { id: 'tag-4', name: 'Time horizons' },
-  { id: 'tag-5', name: 'Constraints' },
-  { id: 'tag-6', name: 'Asymmetry' },
-  { id: 'tag-7', name: 'Environment > Willpower' }
-];
-
 export default function Home() {
-  const [active, setActive] = useState('playlist_view'); // "playlist_view" | "tag_view"
+  const dispatch = useDispatch();
 
-  const [playlists, setPlaylists] = useState(DEMO_PLAYLISTS);
-  const [tags, setTags] = useState(DEMO_TAGS);
+  const playlists = useSelector(selectPlaylistItems);
+  const tags = useSelector(selectTagItems);
 
-  const [selectedPlaylistId, setSelectedPlaylistId] = useState(DEMO_PLAYLISTS[0]?.id ?? null);
+  const playlistsIsLoading = useSelector(selectPlaylistsLoading);
+  const tagsIsLoading = useSelector(selectTagsLoading);
+  const videosIsLoading = useSelector(selectVideosLoading);
+
+  const isLoading = playlistsIsLoading || tagsIsLoading || videosIsLoading;
+
+  const [active, setActive] = useState("playlist_view"); // "playlist_view" | "tag_view"
+  const [selectedPlaylistId, setSelectedPlaylistId] = useState(null);
   const [selectedTagId, setSelectedTagId] = useState(null);
 
-  const [tagModalOpen, setTagModalOpen] = useState(false);
-  const [playlistModalOpen, setPlaylistModalOpen] = useState(false);
-  const [videoModalOpen, setVideoModalOpen] = useState(false);
-
   const selectedPlaylist = useMemo(
-    () => playlists.find(p => p.id === selectedPlaylistId) || null,
+    () => playlists.find((playlistEntity) => playlistEntity.id === selectedPlaylistId) ?? null,
     [playlists, selectedPlaylistId]
   );
 
   const selectedTag = useMemo(
-    () => tags.find(t => t.id === selectedTagId) || null,
+    () => tags.find((tagEntity) => tagEntity.id === selectedTagId) ?? null,
     [tags, selectedTagId]
   );
 
-  const pageTitle =
-    active === 'tag_view' ? (selectedTag?.name ?? 'Tag') : (selectedPlaylist?.name ?? 'Playlist');
+  useEffect(() => {
+    dispatch({ type: GET_PLAYLISTS });
+    dispatch({ type: GET_TAGS });
+  }, [dispatch]);
 
-  const handleSelectPlaylist = playlistId => {
+  useEffect(() => {
+    if (selectedPlaylistId) return;
+    if (!playlists || playlists.length === 0) return;
+
+    setSelectedPlaylistId(playlists[0].id);
+  }, [playlists, selectedPlaylistId]);
+
+  useEffect(() => {
+    if (!selectedPlaylistId) return;
+
+    dispatch({
+      type: GET_VIDEOS,
+      payload: {
+        playlistId: selectedPlaylistId,
+        tags: [],
+        matchAllTags: false,
+        page: 1,
+        pageSize: 200,
+      },
+    });
+  }, [dispatch, selectedPlaylistId]);
+
+  const pageTitle =
+    active === "tag_view"
+      ? selectedTag?.title ?? "Tag"
+      : selectedPlaylist?.title ?? "Playlist";
+
+  const handleSelectPlaylist = (playlistId) => {
     setSelectedPlaylistId(playlistId);
     setSelectedTagId(null);
-    setActive('playlist_view');
+    setActive("playlist_view");
   };
 
-  const handleSelectTag = tagId => {
+  const handleSelectTag = (tagId) => {
     setSelectedTagId(tagId);
-    setActive('tag_view');
+    setActive("tag_view");
   };
+
+  const [tagModalOpen, setTagModalOpen] = useState(false);
+  const [playlistModalOpen, setPlaylistModalOpen] = useState(false);
+  const [videoModalOpen, setVideoModalOpen] = useState(false);
 
   const handleAddVideoOpen = () => setVideoModalOpen(true);
   const handleAddVideoClose = () => setVideoModalOpen(false);
@@ -75,13 +109,41 @@ export default function Home() {
   const handleCreateTagOpen = () => setTagModalOpen(true);
   const handleCreateTagClose = () => setTagModalOpen(false);
 
-  const handleCreatePlaylist = () => console.log('Create playlist');
-  const handleCreateTag = () => console.log('Create tag');
-  const handleAddVideo = () => console.log('Add video');
+  const handleCreatePlaylist = (title) => {
+    dispatch({ type: CREATE_PLAYLIST, payload: { title } });
+    handleCreatePlaylistClose();
+  };
+
+  const handleCreateTag = (name) => {
+    dispatch({ type: CREATE_TAG, payload: { name } });
+    handleCreateTagClose();
+  };
+
+  const handleAddVideo = ({ title, link, channel }) => {
+    if (!selectedPlaylistId) return;
+
+    dispatch({
+      type: ADD_VIDEO,
+      payload: {
+        playlistId: selectedPlaylistId,
+        title,
+        link,
+        channel,
+      },
+    });
+
+    handleAddVideoClose();
+  };
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: "flex" }}>
       <CssBaseline />
+      <Backdrop
+        open={isLoading}
+        sx={{ zIndex: (theme) => theme.zIndex.modal + 1 }}
+      >
+        <CircularProgress />
+      </Backdrop>
 
       <TopBar drawerWidth={drawerWidth} title={pageTitle} />
 
@@ -99,25 +161,19 @@ export default function Home() {
         onNewTag={handleCreateTagOpen}
       />
 
-      <Box component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}>
+      <Box component="main" sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}>
         <Toolbar />
-        <MainContent
-          active={active}
-          selectedPlaylist={selectedPlaylist}
-          selectedTag={selectedTag}
-        />
+        <MainContent active={active} selectedPlaylist={selectedPlaylist} selectedTag={selectedTag} />
       </Box>
 
-      <CreateTagModal
-        open={tagModalOpen}
-        onClose={handleCreateTagClose}
-        onCreate={handleCreateTag}
-      />
+      <CreateTagModal open={tagModalOpen} onClose={handleCreateTagClose} onCreate={handleCreateTag} />
+
       <CreatePlaylistModal
         open={playlistModalOpen}
         onClose={handleCreatePlaylistClose}
         onCreate={handleCreatePlaylist}
       />
+
       <AddVideoModal
         open={videoModalOpen}
         onClose={handleAddVideoClose}
