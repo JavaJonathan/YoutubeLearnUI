@@ -16,7 +16,6 @@ import { selectTagItems, selectVideosLoading, selectVideosError } from "../redux
 
 //TO DO: Make core insignt modal fixed height or max height
 //TO DO: Make taking notes inthis modal easier also, maybe make it its own page?
-//TO DO: Add Learn tab and Review Tab
 //TO DO: Add rating system based on impact
 //TO DO: Add Core Insights to playlists
 const style = {

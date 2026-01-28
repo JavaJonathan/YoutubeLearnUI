@@ -7,12 +7,14 @@ export async function getVideos({
   playlistId,
   tags,
   matchAllTags = false,
+  videoView,
   page = 1,
   pageSize = 100,
 } = {}) {
   const queryParams = new URLSearchParams();
 
   if (playlistId) queryParams.set("playlistId", playlistId);
+  if (videoView) queryParams.set("videoView", String(videoView));
 
   if (Array.isArray(tags) && tags.length > 0) {
     tags.forEach((tagName) => {

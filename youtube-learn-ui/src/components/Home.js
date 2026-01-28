@@ -84,6 +84,7 @@ export default function Home() {
         playlistId: playlistId,
         tags: [],
         matchAllTags: false,
+        videoView: 'learn',
         page: 1,
         pageSize: 200,
       },
