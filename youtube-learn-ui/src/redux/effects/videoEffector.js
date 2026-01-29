@@ -12,6 +12,10 @@ import {
   UPDATE_VIDEO_TAGS_SUCCESS,
   UPDATE_VIDEO_TAGS_FAILURE,
 
+  UPDATE_VIDEO_IMPACT,
+  UPDATE_VIDEO_IMPACT_SUCCESS,
+  UPDATE_VIDEO_IMPACT_FAILURE,
+
   SCRAPE_VIDEO,
   SCRAPE_VIDEO_SUCCESS,
   SCRAPE_VIDEO_FAILURE,
@@ -61,6 +65,19 @@ export async function videoEffector(action, dispatch) {
       break;
     }
 
+    case UPDATE_VIDEO_IMPACT: {
+      try {
+        const videoId = payload?.videoId;
+        const impact = payload?.impact;
+
+        const data = await videoService.updateVideoImpact(videoId, impact);
+        dispatch({ type: UPDATE_VIDEO_IMPACT_SUCCESS, payload: data });
+      } catch (error) {
+        dispatch({ type: UPDATE_VIDEO_IMPACT_FAILURE, payload: error });
+      }
+      break;
+    }
+
     case SCRAPE_VIDEO: {
       try {
         const data = await videoService.scrapeVideo(payload);
@@ -70,7 +87,7 @@ export async function videoEffector(action, dispatch) {
       }
       break;
     }
-    
+
     case CREATE_PLAYLIST_WITH_VIDEOS: {
       try {
         const title = payload?.title;

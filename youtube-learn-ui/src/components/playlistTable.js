@@ -17,6 +17,7 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
+import Rating from "@mui/material/Rating";
 
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import SellIcon from "@mui/icons-material/Sell";
@@ -26,8 +27,13 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import EditCoreInsightsModal from "./editCoreInsightsModal";
 import EditVideoTagsModal from "./editVideoTagsModal";
 
-import { REMOVE_VIDEO, UPDATE_VIDEO_CORE_INSIGHT, UPDATE_VIDEO_TAGS } from "../redux/actionTypes";
-import { selectVideosForSelectedPlaylist, selectVideosTotal } from "../redux/selectors";
+import {
+  REMOVE_VIDEO,
+  UPDATE_VIDEO_TAGS,
+  UPDATE_VIDEO_IMPACT,
+} from "../redux/actionTypes";
+
+import { selectVideosForSelectedPlaylist } from "../redux/selectors";
 import { selectSelectedPlaylistId } from "../redux/selectors";
 import { selectTagItems } from "../redux/selectors";
 
@@ -36,21 +42,9 @@ const columns = [
   { id: "channel", label: "Channel", minWidth: 160 },
   { id: "tags", label: "Tags", minWidth: 220 },
   { id: "coreInsights", label: "Core Insights", minWidth: 140 },
-  { id: "addedAt", label: "Added", minWidth: 120, align: "right" },
+  { id: "impact", label: "Impact", minWidth: 140, align: "center" },
   { id: "remove", label: "", minWidth: 70, align: "right" },
 ];
-
-// Helper to format dates like "Jan 10, 2026"
-function formatDate(iso) {
-  if (!iso) return "—";
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return "—";
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "2-digit",
-    year: "numeric",
-  });
-}
 
 export default function PlaylistTable() {
   const dispatch = useDispatch();
@@ -101,20 +95,31 @@ export default function PlaylistTable() {
     });
   };
 
+  const handleImpactChange = (videoEntity, newImpactValue) => {
+    const videoId = videoEntity?.id;
+    if (!videoId) return;
+
+    if (newImpactValue == null || newImpactValue < 1) return;
+
+    dispatch({
+      type: UPDATE_VIDEO_IMPACT,
+      payload: { videoId, impact: newImpactValue },
+    });
+  };
+
   const count = videoEntities.length;
 
   return (
-    <Paper sx={{
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    overflow: "hidden",
-  }}>
-      <TableContainer sx={{
-        flex: 1,
-        overflowY: "auto",
-      }}>
+    <Paper
+      sx={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+      }}
+    >
+      <TableContainer sx={{ flex: 1, overflowY: "auto" }}>
         <Table stickyHeader aria-label="videos table">
           <TableHead>
             <TableRow>
@@ -136,13 +141,15 @@ export default function PlaylistTable() {
               const videoTitle = videoEntity.title;
               const videoUrl = videoEntity.link;
               const videoChannel = videoEntity.channel;
-              const videoCreatedAt = videoEntity.createdAt;
 
               const tags = videoEntity.tags;
               const hasTags = Array.isArray(tags) && tags.length > 0;
 
               const coreInsights = videoEntity.coreInsights;
               const hasInsight = Boolean(coreInsights && String(coreInsights).trim().length > 0);
+
+              const impactValue =
+                typeof videoEntity.impact === "number" ? videoEntity.impact : 0;
 
               return (
                 <TableRow hover tabIndex={-1} key={videoId}>
@@ -227,7 +234,16 @@ export default function PlaylistTable() {
                     </Stack>
                   </TableCell>
 
-                  <TableCell align="right">{formatDate(videoCreatedAt)}</TableCell>
+                  <TableCell align="center">
+                    <Rating
+                      value={impactValue}
+                      onChange={(event, newImpactValue) =>
+                        handleImpactChange(videoEntity, newImpactValue)
+                      }
+                      size="small"
+                      precision={1}
+                    />
+                  </TableCell>
 
                   <TableCell align="right">
                     <Tooltip title="Remove from playlist">

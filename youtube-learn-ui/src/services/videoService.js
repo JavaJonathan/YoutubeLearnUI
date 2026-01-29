@@ -107,3 +107,13 @@ export async function scrapePlaylist(url) {
   const data = await res.json();
   return data.videos;
 }
+
+export async function updateVideoImpact(videoId, impact) {
+  if (!videoId) throw new Error("videoId is required.");
+
+  const response = await axios.post(`${VIDEO_BASE_URL}/${videoId}/impact`, {
+    impact,
+  });
+
+  return response.data;
+}

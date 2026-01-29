@@ -17,6 +17,9 @@ import {
   SCRAPE_VIDEO,
   SCRAPE_VIDEO_SUCCESS,
   SCRAPE_VIDEO_FAILURE,
+  UPDATE_VIDEO_IMPACT,
+  UPDATE_VIDEO_IMPACT_SUCCESS,
+  UPDATE_VIDEO_IMPACT_FAILURE
 } from "../actionTypes";
 
 const initialState = {
@@ -226,6 +229,37 @@ export default function videosReducer(state = initialState, action) {
         ...state,
         isScraping: false,
         scrapeError: action.payload,
+      };
+    }
+
+    case UPDATE_VIDEO_IMPACT: {
+      return {
+        ...state,
+        isLoading: true,
+        error: null,
+      };
+    }
+
+    case UPDATE_VIDEO_IMPACT_SUCCESS: {
+      const updatedVideoId = action.payload.id;
+      const updatedImpact = action.payload.impact;
+
+      return {
+        ...state,
+        isLoading: false,
+        items: state.items.map((videoEntity) =>
+          videoEntity.id === updatedVideoId
+            ? { ...videoEntity, impact: updatedImpact }
+            : videoEntity
+        ),
+      };
+    }
+
+    case UPDATE_VIDEO_IMPACT_FAILURE: {
+      return {
+        ...state,
+        isLoading: false,
+        error: action.payload,
       };
     }
 
