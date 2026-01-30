@@ -17,7 +17,6 @@ import { selectTagItems, selectVideosLoading, selectVideosError } from "../redux
 //TO DO: Make core insignt modal fixed height or max height
 //TO DO: Make taking notes inthis modal easier also, maybe make it its own page?
 //TO DO: Add Core Insights to playlists
-//TO DO: Add explanation of each mind map tag on the page
 const style = {
   position: "absolute",
   top: "50%",
