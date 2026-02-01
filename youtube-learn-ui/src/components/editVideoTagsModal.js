@@ -14,8 +14,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { UPDATE_VIDEO_TAGS } from "../redux/actionTypes";
 import { selectTagItems, selectVideosLoading, selectVideosError } from "../redux/selectors";
 
-//TO DO: Make core insignt modal fixed height or max height
-//TO DO: Make taking notes inthis modal easier also, maybe make it its own page?
 //TO DO: Add Core Insights to playlists
 const style = {
   position: "absolute",
