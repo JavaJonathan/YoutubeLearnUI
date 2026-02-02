@@ -12,6 +12,7 @@ import MainContent from "./mainContent";
 import CreateTagModal from "./createTagModal";
 import CreatePlaylistModal from "./createPlaylistModal";
 import AddVideoModal from "./addVideoModal";
+import EditPlaylistCoreInsightsModal from "./editPlaylistCoreInsightsModal";
 
 import { GET_PLAYLISTS, CREATE_PLAYLIST } from "../redux/actionTypes";
 import { GET_TAGS, CREATE_TAG } from "../redux/actionTypes";
@@ -43,8 +44,14 @@ export default function Home() {
   const [selectedPlaylistId, setSelectedPlaylistId] = useState(null);
   const [selectedTagId, setSelectedTagId] = useState(null);
 
+  const [playlistCoreInsightsModalOpen, setPlaylistCoreInsightsModalOpen] =
+    useState(false);
+
   const selectedPlaylist = useMemo(
-    () => playlists.find((playlistEntity) => playlistEntity.id === selectedPlaylistId) ?? null,
+    () =>
+      playlists.find(
+        (playlistEntity) => playlistEntity.id === selectedPlaylistId
+      ) ?? null,
     [playlists, selectedPlaylistId]
   );
 
@@ -66,34 +73,41 @@ export default function Home() {
   }, [playlists, selectedPlaylistId]);
 
   useEffect(() => {
-    if (!selectedPlaylistId) return;
+    if (active !== "playlist_view" && playlistCoreInsightsModalOpen) {
+      setPlaylistCoreInsightsModalOpen(false);
+    }
+  }, [active, playlistCoreInsightsModalOpen]);
 
-    
-  }, [dispatch, selectedPlaylistId, selectedTagId]);
+  useEffect(() => {
+    if (playlistCoreInsightsModalOpen) {
+      setPlaylistCoreInsightsModalOpen(false);
+    }
+  }, [selectedPlaylistId]);
 
   const pageTitle =
-    active === "tag_view"
-      ? selectedTag?.title
-      : selectedPlaylist?.title;
+    active === "tag_view" ? selectedTag?.title : selectedPlaylist?.title;
 
   const handleSelectPlaylist = (playlistId) => {
     setSelectedPlaylistId(playlistId);
+
     dispatch({
       type: GET_VIDEOS,
       payload: {
         playlistId: playlistId,
         tags: [],
         matchAllTags: false,
-        videoView: 'learn',
+        videoView: "learn",
         page: 1,
         pageSize: 200,
       },
     });
+
     setActive("playlist_view");
   };
 
   const handleSelectTag = (tagId) => {
     setSelectedTagId(tagId);
+
     dispatch({
       type: GET_VIDEOS,
       payload: {
@@ -104,6 +118,7 @@ export default function Home() {
         pageSize: 200,
       },
     });
+
     setActive("tag_view");
   };
 
@@ -119,6 +134,11 @@ export default function Home() {
 
   const handleCreateTagOpen = () => setTagModalOpen(true);
   const handleCreateTagClose = () => setTagModalOpen(false);
+
+  const handlePlaylistCoreInsightsOpen = () =>
+    setPlaylistCoreInsightsModalOpen(true);
+  const handlePlaylistCoreInsightsClose = () =>
+    setPlaylistCoreInsightsModalOpen(false);
 
   const handleCreatePlaylist = (title) => {
     dispatch({ type: CREATE_PLAYLIST, payload: { title } });
@@ -149,14 +169,16 @@ export default function Home() {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <Backdrop
-        open={isLoading}
-        sx={{ zIndex: (theme) => theme.zIndex.modal + 1 }}
-      >
+      <Backdrop open={isLoading} sx={{ zIndex: (theme) => theme.zIndex.modal + 1 }}>
         <CircularProgress />
       </Backdrop>
 
-      <TopBar drawerWidth={drawerWidth} title={pageTitle} />
+      <TopBar
+        drawerWidth={drawerWidth}
+        title={pageTitle}
+        active={active}
+        onEditPlaylistCoreInsights={handlePlaylistCoreInsightsOpen}
+      />
 
       <SideNav
         drawerWidth={drawerWidth}
@@ -174,10 +196,18 @@ export default function Home() {
 
       <Box component="main" sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}>
         <Toolbar />
-        <MainContent active={active} selectedPlaylist={selectedPlaylist} selectedTag={selectedTag} />
+        <MainContent
+          active={active}
+          selectedPlaylist={selectedPlaylist}
+          selectedTag={selectedTag}
+        />
       </Box>
 
-      <CreateTagModal open={tagModalOpen} onClose={handleCreateTagClose} onCreate={handleCreateTag} />
+      <CreateTagModal
+        open={tagModalOpen}
+        onClose={handleCreateTagClose}
+        onCreate={handleCreateTag}
+      />
 
       <CreatePlaylistModal
         open={playlistModalOpen}
@@ -189,6 +219,12 @@ export default function Home() {
         open={videoModalOpen}
         onClose={handleAddVideoClose}
         onAdd={handleAddVideo}
+        playlist={selectedPlaylist}
+      />
+
+      <EditPlaylistCoreInsightsModal
+        open={playlistCoreInsightsModalOpen}
+        onClose={handlePlaylistCoreInsightsClose}
         playlist={selectedPlaylist}
       />
     </Box>

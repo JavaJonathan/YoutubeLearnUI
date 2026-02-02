@@ -15,6 +15,10 @@ import {
   CREATE_PLAYLIST_WITH_VIDEOS,
   CREATE_PLAYLIST_WITH_VIDEOS_SUCCESS,
   CREATE_PLAYLIST_WITH_VIDEOS_FAILURE,
+
+  UPDATE_PLAYLIST_CORE_INSIGHTS,
+  UPDATE_PLAYLIST_CORE_INSIGHTS_SUCCESS,
+  UPDATE_PLAYLIST_CORE_INSIGHTS_FAILURE,
 } from "../actionTypes";
 
 const initialState = {
@@ -35,17 +39,20 @@ function normalizePlaylistEntity(playlistEntity) {
   const title = playlistEntity.title ?? playlistEntity.Title;
   const createdAt = playlistEntity.createdAt ?? playlistEntity.CreatedAt;
 
+  const coreInsights =
+    playlistEntity.coreInsights ?? playlistEntity.CoreInsights ?? null;
+
   return {
     ...playlistEntity,
     id,
     title,
     createdAt,
+    coreInsights,
   };
 }
 
 function upsertPlaylistById(playlistEntities, updatedPlaylistEntity) {
-  const normalizedPlaylist = normalizePlaylistEntity(updatedPlaylistEntity);
-  const updatedPlaylistId = getPlaylistId(normalizedPlaylist);
+  const updatedPlaylistId = getPlaylistId(updatedPlaylistEntity);
 
   if (!updatedPlaylistId) return playlistEntities;
 
@@ -54,12 +61,12 @@ function upsertPlaylistById(playlistEntities, updatedPlaylistEntity) {
   );
 
   if (existingIndex === -1) {
-    return [normalizedPlaylist, ...playlistEntities];
+    return [updatedPlaylistEntity, ...playlistEntities];
   }
 
   return playlistEntities.map((playlistEntity) =>
     getPlaylistId(playlistEntity) === updatedPlaylistId
-      ? { ...playlistEntity, ...normalizedPlaylist }
+      ? { ...playlistEntity, ...updatedPlaylistEntity }
       : playlistEntity
   );
 }
@@ -188,6 +195,36 @@ export default function playlistsReducer(state = initialState, action) {
     }
 
     case UPDATE_PLAYLIST_FAILURE: {
+      return {
+        ...state,
+        isLoading: false,
+        error: action.payload,
+      };
+    }
+
+    case UPDATE_PLAYLIST_CORE_INSIGHTS: {
+      return {
+        ...state,
+        isLoading: true,
+        error: null,
+      };
+    }
+
+    case UPDATE_PLAYLIST_CORE_INSIGHTS_SUCCESS: {
+      const updatedPlaylist = action.payload;
+
+      const updatedItems = updatedPlaylist
+        ? upsertPlaylistById(state.items, updatedPlaylist)
+        : state.items;
+
+      return {
+        ...state,
+        isLoading: false,
+        items: updatedItems,
+      };
+    }
+
+    case UPDATE_PLAYLIST_CORE_INSIGHTS_FAILURE: {
       return {
         ...state,
         isLoading: false,

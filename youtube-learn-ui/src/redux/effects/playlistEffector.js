@@ -1,4 +1,4 @@
-import * as playlistService from '../../services/playlistService';
+import * as playlistService from "../../services/playlistService";
 import {
   GET_PLAYLISTS,
   GET_PLAYLISTS_SUCCESS,
@@ -11,8 +11,11 @@ import {
   ADD_VIDEO_FAILURE,
   REMOVE_VIDEO,
   REMOVE_VIDEO_SUCCESS,
-  REMOVE_VIDEO_FAILURE
-} from '../actionTypes';
+  REMOVE_VIDEO_FAILURE,
+  UPDATE_PLAYLIST_CORE_INSIGHTS,
+  UPDATE_PLAYLIST_CORE_INSIGHTS_SUCCESS,
+  UPDATE_PLAYLIST_CORE_INSIGHTS_FAILURE,
+} from "../actionTypes";
 
 export async function playlistEffector(action, dispatch) {
   const payload = action?.payload;
@@ -30,7 +33,7 @@ export async function playlistEffector(action, dispatch) {
 
     case CREATE_PLAYLIST: {
       try {
-        const title = typeof payload === 'string' ? payload : payload?.title;
+        const title = typeof payload === "string" ? payload : payload?.title;
 
         const playlists = await playlistService.createPlaylist(title);
         dispatch({ type: CREATE_PLAYLIST_SUCCESS, payload: playlists });
@@ -46,7 +49,7 @@ export async function playlistEffector(action, dispatch) {
           playlistId: payload?.playlistId,
           title: payload?.title,
           link: payload?.link,
-          channel: payload?.channel
+          channel: payload?.channel,
         });
 
         dispatch({ type: ADD_VIDEO_SUCCESS, payload: data });
@@ -65,10 +68,30 @@ export async function playlistEffector(action, dispatch) {
 
         dispatch({
           type: REMOVE_VIDEO_SUCCESS,
-          payload: { playlistId, videoId }
+          payload: { playlistId, videoId },
         });
       } catch (error) {
         dispatch({ type: REMOVE_VIDEO_FAILURE, payload: error });
+      }
+      break;
+    }
+
+    case UPDATE_PLAYLIST_CORE_INSIGHTS: {
+      try {
+        const playlistId = payload?.playlistId;
+        const coreInsights = payload?.coreInsights;
+
+        const updatedPlaylist = await playlistService.updatePlaylistCoreInsights(
+          playlistId,
+          coreInsights.trim()
+        );
+
+        dispatch({
+          type: UPDATE_PLAYLIST_CORE_INSIGHTS_SUCCESS,
+          payload: updatedPlaylist,
+        });
+      } catch (error) {
+        dispatch({ type: UPDATE_PLAYLIST_CORE_INSIGHTS_FAILURE, payload: error });
       }
       break;
     }

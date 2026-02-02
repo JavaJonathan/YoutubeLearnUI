@@ -55,3 +55,22 @@ export async function removeVideoFromPlaylist(playlistId, videoId) {
 
   await axios.delete(`${BASE_URL}/${playlistId}/videos/${videoId}`);
 }
+
+export async function updatePlaylistCoreInsights(playlistId, coreInsights) {
+  if (!playlistId) {
+    throw new Error("updatePlaylistCoreInsights: playlistId is required.");
+  }
+
+  const trimmedCoreInsights = coreInsights?.trim();
+
+  if (!trimmedCoreInsights) {
+    throw new Error("updatePlaylistCoreInsights: coreInsights is required.");
+  }
+
+  const response = await axios.put(`${BASE_URL}/${playlistId}/coreInsights`, {
+    coreInsights: trimmedCoreInsights,
+  });
+
+  return response.data;
+}
+
