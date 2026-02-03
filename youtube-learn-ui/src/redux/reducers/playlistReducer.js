@@ -28,10 +28,6 @@ const initialState = {
   selectedPlaylistId: null,
 };
 
-function getPlaylistId(playlistEntity) {
-  return playlistEntity?.id ?? playlistEntity?.Id;
-}
-
 function normalizePlaylistEntity(playlistEntity) {
   if (!playlistEntity) return playlistEntity;
 
@@ -52,12 +48,12 @@ function normalizePlaylistEntity(playlistEntity) {
 }
 
 function upsertPlaylistById(playlistEntities, updatedPlaylistEntity) {
-  const updatedPlaylistId = getPlaylistId(updatedPlaylistEntity);
+  const updatedPlaylistId = updatedPlaylistEntity.id;
 
   if (!updatedPlaylistId) return playlistEntities;
 
   const existingIndex = playlistEntities.findIndex(
-    (playlistEntity) => getPlaylistId(playlistEntity) === updatedPlaylistId
+    (playlistEntity) => playlistEntity.id === updatedPlaylistId
   );
 
   if (existingIndex === -1) {
@@ -65,7 +61,7 @@ function upsertPlaylistById(playlistEntities, updatedPlaylistEntity) {
   }
 
   return playlistEntities.map((playlistEntity) =>
-    getPlaylistId(playlistEntity) === updatedPlaylistId
+    playlistEntity.id === updatedPlaylistId
       ? { ...playlistEntity, ...updatedPlaylistEntity }
       : playlistEntity
   );
@@ -82,18 +78,10 @@ export default function playlistsReducer(state = initialState, action) {
     }
 
     case GET_PLAYLISTS_SUCCESS: {
-      const returnedValue = action.payload;
-
-      const updatedItems = Array.isArray(returnedValue)
-        ? returnedValue.map(normalizePlaylistEntity)
-        : returnedValue
-        ? upsertPlaylistById(state.items, returnedValue)
-        : state.items;
-
       return {
         ...state,
         isLoading: false,
-        items: updatedItems,
+        items: action.payload,
       };
     }
 
@@ -152,7 +140,7 @@ export default function playlistsReducer(state = initialState, action) {
         ? upsertPlaylistById(state.items, createdPlaylist)
         : state.items;
 
-      const createdPlaylistId = getPlaylistId(createdPlaylist);
+      const createdPlaylistId = createdPlaylist.id;
 
       return {
         ...state,
@@ -245,7 +233,7 @@ export default function playlistsReducer(state = initialState, action) {
         action.payload?.id ?? action.payload?.playlistId ?? action.payload;
 
       const updatedItems = state.items.filter(
-        (playlistEntity) => getPlaylistId(playlistEntity) !== deletedPlaylistId
+        (playlistEntity) => playlistEntity.id !== deletedPlaylistId
       );
 
       const updatedSelectedPlaylistId =
