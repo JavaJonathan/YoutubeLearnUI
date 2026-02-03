@@ -14,7 +14,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { UPDATE_VIDEO_TAGS } from "../redux/actionTypes";
 import { selectTagItems, selectVideosLoading, selectVideosError } from "../redux/selectors";
 
-//TO DO: Add Core Insights to playlists
 const style = {
   position: "absolute",
   top: "50%",
